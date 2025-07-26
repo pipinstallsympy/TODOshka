@@ -1,0 +1,35 @@
+﻿services:
+  todoshka:
+    image: mysql:8.0
+    container_name: TODOshka
+    environment:
+      MYSQL_ROOT_PASSWORD: amogus  # Из переменных окружения
+      MYSQL_DATABASE: TODOshka                # Создаем БД при старте
+      MYSQL_USER: user1                    # Создаем пользователя
+      MYSQL_PASSWORD: sussybaka
+    volumes:
+      - mysql_data:/var/lib/mysql                # Постоянное хранение данных
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # SQL скрипты для инициализации
+    ports:
+      - "3306:3306"
+    networks:
+      - backend_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  backend_network:
+    driver: bridge

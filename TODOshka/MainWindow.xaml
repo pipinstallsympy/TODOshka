@@ -1,0 +1,83 @@
+﻿<Window x:Class="TODOshka.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="TODOshka" Height="540" Width="960" WindowStyle="ThreeDBorderWindow">
+        <!--xmlns:local="clr-namespace:TODOshka" -->
+    <Grid Background="#6d6d6d" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height = "30"></RowDefinition>
+            <RowDefinition Height = "*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">То, что необходимо сделать</TextBlock>
+        </Grid>
+        
+        <Grid Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">Самый важный приоритет</TextBlock>
+        </Grid>
+        
+        <Grid Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">В процессе</TextBlock>
+        </Grid>
+        
+        <Grid Grid.Row = "0" Grid.Column="3" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">Сделано</TextBlock>
+        </Grid>
+        
+        
+        <Grid Grid.Row = "1" Grid.Column = "0">
+            <Button
+                Height="50"
+                Width="150"
+                Margin="20"
+                VerticalAlignment="Center"
+                Content = "Чтение БД"
+                Click="ButtonClickRead"
+            >
+            </Button>
+        </Grid>
+        
+        <Grid Grid.Row="1" Grid.Column="1">
+            <StackPanel Orientation="Vertical">
+                <TextBox x:Name="TaskAdd" Width="300" Margin="10"/>
+                <TextBox x:Name="DescriptionAdd" Width="300" Margin="10"/>
+                <Button
+                    Height="50"
+                    Width="150"
+                    Margin="20"
+                    VerticalAlignment="Center"
+                    Content = "Добавление инфы в БД"
+                    Click="ButtonClickAdd"
+                >
+                </Button>
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row = "1" Grid.Column="2">
+            <StackPanel Orientation="Vertical">
+                <TextBox x:Name="TaskDelete" Width="300" Margin="10"/>
+                <TextBox x:Name="DescriptionDelete" Width="300" Margin="10"/>
+                <Button
+                    Height="50"
+                    Width="150"
+                    Margin="20"
+                    VerticalAlignment="Center"
+                    Content="Удаление инфы"
+                    Click="ButtonClickDelete"
+                >
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
