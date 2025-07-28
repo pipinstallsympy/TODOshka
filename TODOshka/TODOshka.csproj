@@ -23,4 +23,11 @@
       <ProjectReference Include="..\SQLlogic\SQLlogic.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="images\bin.png" />
+      <Resource Include="Resources\bin.png" />
+      <None Remove="Resources\free-icon-plus-2549959.png" />
+      <Resource Include="Resources\plus.png" />
+    </ItemGroup>
+
 </Project>

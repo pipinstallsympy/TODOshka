@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="TODOshka" Height="540" Width="960" WindowStyle="ThreeDBorderWindow">
         <!--xmlns:local="clr-namespace:TODOshka" -->
-    <Grid Background="#6d6d6d" >
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -20,64 +20,81 @@
         </Grid.RowDefinitions>
         
         <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
-            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">То, что необходимо сделать</TextBlock>
-        </Grid>
-        
-        <Grid Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
-            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">Самый важный приоритет</TextBlock>
-        </Grid>
-        
-        <Grid Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
-            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">В процессе</TextBlock>
-        </Grid>
-        
-        <Grid Grid.Row = "0" Grid.Column="3" VerticalAlignment="Center">
-            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Foreground="White">Сделано</TextBlock>
-        </Grid>
-        
-        
-        <Grid Grid.Row = "1" Grid.Column = "0">
-            <Button
-                Height="50"
-                Width="150"
-                Margin="20"
-                VerticalAlignment="Center"
-                Content = "Чтение БД"
-                Click="ButtonClickRead"
-            >
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Margin="0, 8,0,0">То, что необходимо сделать</TextBlock>
+            <Button 
+                Height="20"
+                Width="20"
+                Margin="5"
+                HorizontalAlignment="Right"
+                Tag="0"
+                Click="AddButton_Click"
+                >
+                <Image Source="pack://application:,,,/TODOshka;component/Resources/plus.png" Stretch="Uniform"/>
             </Button>
         </Grid>
         
-        <Grid Grid.Row="1" Grid.Column="1">
-            <StackPanel Orientation="Vertical">
-                <TextBox x:Name="TaskAdd" Width="300" Margin="10"/>
-                <TextBox x:Name="DescriptionAdd" Width="300" Margin="10"/>
-                <Button
-                    Height="50"
-                    Width="150"
-                    Margin="20"
-                    VerticalAlignment="Center"
-                    Content = "Добавление инфы в БД"
-                    Click="ButtonClickAdd"
-                >
-                </Button>
-            </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Margin="0, 8,0,0">Самый важный приоритет</TextBlock>
+            <Button 
+                Height="20"
+                Width="20"
+                Margin="5"
+                HorizontalAlignment="Right"
+                Tag="1"
+                Click="AddButton_Click"
+            >
+                <Image Source="pack://application:,,,/TODOshka;component/Resources/plus.png" Stretch="Uniform"/>
+            </Button>
         </Grid>
         
-        <Grid Grid.Row = "1" Grid.Column="2">
-            <StackPanel Orientation="Vertical">
-                <TextBox x:Name="TaskDelete" Width="300" Margin="10"/>
-                <TextBox x:Name="DescriptionDelete" Width="300" Margin="10"/>
-                <Button
-                    Height="50"
-                    Width="150"
-                    Margin="20"
-                    VerticalAlignment="Center"
-                    Content="Удаление инфы"
-                    Click="ButtonClickDelete"
-                >
-                </Button>
-            </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Margin="0, 8,0,0">В процессе</TextBlock>
+            <Button 
+                Height="20"
+                Width="20"
+                Margin="5"
+                HorizontalAlignment="Right"
+                Tag="2"
+                Click="AddButton_Click"
+            >
+                <Image Source="pack://application:,,,/TODOshka;component/Resources/plus.png" Stretch="Uniform"/>
+            </Button>
         </Grid>
+        
+        <Grid Grid.Row = "0" Grid.Column="3" VerticalAlignment="Center">
+            <TextBlock TextAlignment="Center" FontFamily="Montserrat Bold" Margin="0, 8,0,0">Сделано</TextBlock>
+            <Button 
+                Height="20"
+                Width="20"
+                Margin="5"
+                HorizontalAlignment="Right"
+                Tag="3"
+                Click="AddButton_Click"
+            >
+                <Image Source="pack://application:,,,/TODOshka;component/Resources/plus.png" Stretch="Uniform"/>
+            </Button>
+        </Grid>
+        
+        <StackPanel 
+            Grid.Row = "1" 
+            Grid.Column="0"
+            x:Name="PanelTasksNeeded0">
+        </StackPanel>
+        <StackPanel 
+            Grid.Row = "1" 
+            Grid.Column="1"
+            x:Name="PanelTasksNeeded1">
+        </StackPanel>
+        <StackPanel 
+            Grid.Row = "1" 
+            Grid.Column="2"
+            x:Name="PanelTasksNeeded2">
+        </StackPanel>
+        <StackPanel 
+            Grid.Row = "1" 
+            Grid.Column="3"
+            x:Name="PanelTasksNeeded3">
+        </StackPanel>
+        
     </Grid>
 </Window>
