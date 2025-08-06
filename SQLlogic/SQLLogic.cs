@@ -52,42 +52,67 @@ public static class SQLLogic
                           INSERT INTO {table} (task, description)
                           VALUES (@task, @description); 
                           """;
-        using (MySqlCommand command = new MySqlCommand(cmdText, connection))
+        try
         {
-            command.Parameters.AddWithValue("@task", newTask);
-            command.Parameters.AddWithValue("@description", newDescription);
-            command.ExecuteNonQuery();
+            using (MySqlCommand command = new MySqlCommand(cmdText, connection))
+            {
+                command.Parameters.AddWithValue("@task", newTask);
+                command.Parameters.AddWithValue("@description", newDescription);
+                command.ExecuteNonQuery();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
         }
     }
 
     public static void SQLDelete(MySqlConnection connection, string table, string oldTask, string oldDescription)
     {
-        string cmdText = $"""
-                           DELETE FROM {table} WHERE task = @task AND description = @description;
-                           """;
-        using (MySqlCommand command = new MySqlCommand(cmdText, connection))
+        MySqlTransaction transaction = connection.BeginTransaction();
+
+        try
         {
-            command.Parameters.AddWithValue("@task", oldTask);
-            command.Parameters.AddWithValue("@description", oldDescription);
-            command.ExecuteNonQuery();
+            string createTableText = $"""
+                                CREATE TEMPORARY TABLE {table + "_temp"} AS
+                                SELECT task, description FROM {table}
+                                WHERE NOT (task = @task AND description = @description);
+                                """;
+            using (MySqlCommand command = new MySqlCommand(createTableText, connection, transaction))
+            {
+                command.Parameters.AddWithValue("@task", oldTask);
+                command.Parameters.AddWithValue("@description", oldDescription);
+                command.Parameters.AddWithValue("@tableTemp", table + "_temp");
+                command.Parameters.AddWithValue("@table", table);
+                command.ExecuteNonQuery();
+            }
+
+            
+            string truncText = $"""
+                                TRUNCATE TABLE {table};
+                                """;
+            using (MySqlCommand command = new MySqlCommand(truncText, connection, transaction))
+            {
+                command.ExecuteNonQuery();
+            }
+
+            
+            string returnDataText = $"""
+                                     INSERT INTO {table} (task, description) SELECT * FROM {table + "_temp"};
+                                     DROP TEMPORARY TABLE IF EXISTS {table + "_temp"};
+                                     """;
+            using (MySqlCommand command = new MySqlCommand(returnDataText, connection, transaction))
+            {
+                command.ExecuteNonQuery();
+            }
+            transaction.Commit();
+        }
+        catch (Exception e)
+        {
+            transaction.Rollback();
+            throw new Exception($"Ошибка: {e.Message}");
         }
         
-        string cmdMax = $"""
-                         SELECT IFNULL(MAX(id), 0) FROM {table};
-                         """;
-        int idMax;
-        using (MySqlCommand commandMax = new MySqlCommand(cmdMax, connection))
-        {
-            idMax = Convert.ToInt32(commandMax.ExecuteScalar());
-        }
-        string cmdInc = $"""
-                         ALTER TABLE {table} AUTO_INCREMENT = @max;
-                         """;
-        using (MySqlCommand commandInc = new MySqlCommand(cmdInc, connection))
-        {
-            commandInc.Parameters.AddWithValue("@max", idMax + 1);
-            commandInc.ExecuteNonQuery();
-        }
     }
 
     public static string PanelToTable(int panel)

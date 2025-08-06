@@ -152,7 +152,6 @@ public partial class MainWindow : Window
             {
                 connection.Open();
                 SQLDelete(connection, PanelToTable(data[3]), data[1], data[2]);
-                RefreshPanel(int.Parse(data[3]));
                 connection.Close();
             }
         }
@@ -160,6 +159,7 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(ex.Message);
         }
+        RefreshPanel(int.Parse(data[3]));
     }
 
     private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -171,9 +171,9 @@ public partial class MainWindow : Window
         {
             connection.Open();
             SQLInsert(connection, PanelToTable(data), random.Next().ToString(), random.Next().ToString());
-            RefreshPanel(int.Parse(data));
             connection.Close();
         }
+        RefreshPanel(int.Parse(data));
     }
 
 
