@@ -28,6 +28,8 @@
       <Resource Include="Resources\bin.png" />
       <None Remove="Resources\free-icon-plus-2549959.png" />
       <Resource Include="Resources\plus.png" />
+      <None Remove="Resources\icon.ico" />
+      <Resource Include="Resources\icon.ico" />
     </ItemGroup>
 
 </Project>

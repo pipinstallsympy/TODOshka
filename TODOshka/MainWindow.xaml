@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="TODOshka" Height="540" Width="960" WindowStyle="ThreeDBorderWindow">
+        Title="TODOshka" Height="540" Width="960" WindowStyle="ThreeDBorderWindow"
+        Icon="./Resources/icon.ico">
         <!--xmlns:local="clr-namespace:TODOshka" -->
     <Grid>
         <Grid.ColumnDefinitions>

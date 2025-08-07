@@ -161,19 +161,15 @@ public partial class MainWindow : Window
         }
         RefreshPanel(int.Parse(data[3]));
     }
-
+    
     private void AddButton_Click(object sender, RoutedEventArgs e)
     {
         Button button = sender as Button;
-        string data = button.Tag as string;
-        Random random = new Random();
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
-        {
-            connection.Open();
-            SQLInsert(connection, PanelToTable(data), random.Next().ToString(), random.Next().ToString());
-            connection.Close();
-        }
-        RefreshPanel(int.Parse(data));
+        int data = int.Parse(button.Tag as string);
+        
+        InsertWindow insertWindow = new InsertWindow(data, connectionString);
+        insertWindow.ShowDialog();
+        RefreshPanel(data);
     }
 
 
