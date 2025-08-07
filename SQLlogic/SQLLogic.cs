@@ -48,21 +48,24 @@ public static class SQLLogic
 
     public static void SQLInsert(MySqlConnection connection, string table, string newTask, string newDescription)
     {
+        MySqlTransaction transaction = connection.BeginTransaction();
         string cmdText = $"""
                           INSERT INTO {table} (task, description)
                           VALUES (@task, @description); 
                           """;
         try
         {
-            using (MySqlCommand command = new MySqlCommand(cmdText, connection))
+            using (MySqlCommand command = new MySqlCommand(cmdText, connection, transaction))
             {
                 command.Parameters.AddWithValue("@task", newTask);
                 command.Parameters.AddWithValue("@description", newDescription);
                 command.ExecuteNonQuery();
             }
+            transaction.Commit();
         }
         catch (Exception e)
         {
+            transaction.Rollback();
             throw new Exception(e.Message);
         }
     }
