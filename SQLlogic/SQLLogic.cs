@@ -1,6 +1,5 @@
 ﻿namespace SQLLogic;
 using MySql.Data.MySqlClient;
-
 public static class SQLLogic
 {
     public static string SQLReadAll(MySqlConnection connection, string table)
@@ -11,25 +10,28 @@ public static class SQLLogic
             string message = "";
             while (reader.Read())
             { 
-                message += ($"ID: {reader["id"]} Task: {reader["task"]} Description: {reader["description"]}\n");
+                message += ($"ID: {reader["id"]} UserID: {reader["user_id"]} Task: {reader["task"]} Description: {reader["description"]}\n");
             }
             return message;
         }
     }
     
-    public static string[][] SQLReadAllMatrix(MySqlConnection connection, string table)
+    public static string[][] SQLReadAllMatrix(MySqlConnection connection, string table, string userId)
     {
-        string cmdCount = $"SELECT COUNT(*) FROM {table}";
+        string cmdCount = $"SELECT COUNT(*) FROM {table} WHERE user_id = @userId";
         int count;
         using (MySqlCommand commandCount = new MySqlCommand(cmdCount, connection))
         {
             commandCount.Parameters.AddWithValue("@table", table);
+            commandCount.Parameters.AddWithValue("@userId", userId);
             count = Convert.ToInt32(commandCount.ExecuteScalar());
         }
         
-        string cmdText = $"SELECT * FROM {table}";
+        string cmdText = $"SELECT * FROM {table} WHERE user_id = @userId";
         MySqlCommand command = new MySqlCommand(cmdText, connection);
         command.Parameters.AddWithValue("@table", table);
+        command.Parameters.AddWithValue("@userId", userId);
+        
         using (MySqlDataReader reader = command.ExecuteReader())
         {
             string[][] message = new string[count][];
@@ -46,12 +48,12 @@ public static class SQLLogic
         }
     }
 
-    public static void SQLInsert(MySqlConnection connection, string table, string newTask, string newDescription)
+    public static void SQLInsert(MySqlConnection connection, string table, string userId, string newTask, string newDescription)
     {
         MySqlTransaction transaction = connection.BeginTransaction();
         string cmdText = $"""
-                          INSERT INTO {table} (task, description)
-                          VALUES (@task, @description); 
+                          INSERT INTO {table} (user_id, task, description)
+                          VALUES (@userId, @task, @description); 
                           """;
         try
         {
@@ -59,6 +61,7 @@ public static class SQLLogic
             {
                 command.Parameters.AddWithValue("@task", newTask);
                 command.Parameters.AddWithValue("@description", newDescription);
+                command.Parameters.AddWithValue("@userId", userId);
                 command.ExecuteNonQuery();
             }
             transaction.Commit();
@@ -70,43 +73,38 @@ public static class SQLLogic
         }
     }
 
-    public static void SQLDelete(MySqlConnection connection, string table, string oldTask, string oldDescription)
+    public static void SQLDelete(MySqlConnection connection, string table, string UserId, string oldTask, string oldDescription)
     {
         MySqlTransaction transaction = connection.BeginTransaction();
 
         try
         {
-            string createTableText = $"""
-                                CREATE TEMPORARY TABLE {table + "_temp"} AS
-                                SELECT task, description FROM {table}
-                                WHERE NOT (task = @task AND description = @description);
-                                """;
-            using (MySqlCommand command = new MySqlCommand(createTableText, connection, transaction))
+            string cmdText = $"""
+                              DELETE FROM {table} WHERE task = @task AND description = @description AND user_id = @userId;
+                              """;
+            using (MySqlCommand command = new MySqlCommand(cmdText, connection, transaction))
             {
                 command.Parameters.AddWithValue("@task", oldTask);
                 command.Parameters.AddWithValue("@description", oldDescription);
-                command.Parameters.AddWithValue("@tableTemp", table + "_temp");
-                command.Parameters.AddWithValue("@table", table);
+                command.Parameters.AddWithValue("@userId", UserId);
                 command.ExecuteNonQuery();
             }
-
-            
-            string truncText = $"""
-                                TRUNCATE TABLE {table};
-                                """;
-            using (MySqlCommand command = new MySqlCommand(truncText, connection, transaction))
+        
+            string cmdMax = $"""
+                             SELECT IFNULL(MAX(id), 0) FROM {table};
+                             """;
+            int idMax;
+            using (MySqlCommand commandMax = new MySqlCommand(cmdMax, connection, transaction))
             {
-                command.ExecuteNonQuery();
+                idMax = Convert.ToInt32(commandMax.ExecuteScalar());
             }
-
-            
-            string returnDataText = $"""
-                                     INSERT INTO {table} (task, description) SELECT * FROM {table + "_temp"};
-                                     DROP TEMPORARY TABLE IF EXISTS {table + "_temp"};
-                                     """;
-            using (MySqlCommand command = new MySqlCommand(returnDataText, connection, transaction))
+            string cmdInc = $"""
+                             ALTER TABLE {table} AUTO_INCREMENT = @max;
+                             """;
+            using (MySqlCommand commandInc = new MySqlCommand(cmdInc, connection, transaction))
             {
-                command.ExecuteNonQuery();
+                commandInc.Parameters.AddWithValue("@max", idMax + 1);
+                commandInc.ExecuteNonQuery();
             }
             transaction.Commit();
         }
@@ -115,7 +113,6 @@ public static class SQLLogic
             transaction.Rollback();
             throw new Exception($"Ошибка: {e.Message}");
         }
-        
     }
 
     public static string PanelToTable(int panel)

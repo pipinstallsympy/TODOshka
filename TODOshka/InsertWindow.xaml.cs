@@ -7,31 +7,31 @@ namespace TODOshka;
 public partial class InsertWindow : Window
 {
     private int panelNumber;
-    private string connectionString;
+    private MySqlConnection connection;
+    private string userId;
     
     public InsertWindow()
     {
         InitializeComponent();
     }
 
-    public InsertWindow(int data, string connection)
+    public InsertWindow(MySqlConnection connection, string UserId, int data)
     {
         InitializeComponent();
+        this.connection = connection;
+        userId = UserId;
         panelNumber = data;
-        connectionString = connection;
     }
 
     private void DataSendButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-                SQLInsert(connection, PanelToTable(panelNumber), TaskBox.Text, DescriptionBox.Text);
-                connection.Close();
-                Close();
-            }
+            connection.Open();
+            SQLInsert(connection, PanelToTable(panelNumber), userId, TaskBox.Text, DescriptionBox.Text);
+            connection.Close();
+            Close();
+            
         }
         catch (Exception ex)
         {

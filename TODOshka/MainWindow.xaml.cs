@@ -1,9 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net.Mime;
-using System.Runtime.CompilerServices;
-using System.Security.RightsManagement;
-using System.Windows;
-using System.Windows.Automation;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -11,14 +6,17 @@ using MySql.Data.MySqlClient;
 using static SQLLogic.SQLLogic;
 
 namespace TODOshka;
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
 public partial class MainWindow : Window
 {
-    static string connectionString = "server=localhost;port=3306;database=TODOshka;user=user1;password=sussybaka;";
+    private static MySqlConnection connection;
+    private static string userId;
     public MainWindow()
     {
+        Authorization authorizationWindow = new Authorization();
+        authorizationWindow.ShowDialog();
+        connection = DataBridge.Connection;
+        userId = DataBridge.UserId;
+
         InitializeComponent();
         AddDataToStackPanel(0);
         AddDataToStackPanel(1);
@@ -30,19 +28,17 @@ public partial class MainWindow : Window
     {
         try
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-                string table = PanelToTable(panel);
-                string[][] newData = SQLReadAllMatrix(connection, table);
-                int count = newData.Length;
+            connection.Open();
+            string table = PanelToTable(panel);
+            string[][] newData = SQLReadAllMatrix(connection, table, userId);
+            int count = newData.Length;
                 
-                for (int i = 0; i < count; i++)
-                {
-                    CreateCuteBox(newData[i], panel);
-                }
-                connection.Close();
+            for (int i = 0; i < count; i++)
+            {
+                CreateCuteBox(newData[i], panel);
             }
+            connection.Close();
+            
         }
         catch (Exception e)
         {
@@ -148,12 +144,9 @@ public partial class MainWindow : Window
         string[] data = button.Tag as string[];
         try
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-                SQLDelete(connection, PanelToTable(data[3]), data[1], data[2]);
-                connection.Close();
-            }
+            connection.Open();
+            SQLDelete(connection, PanelToTable(data[3]), userId, data[1], data[2]);
+            connection.Close();
         }
         catch (Exception ex)
         {
@@ -167,7 +160,7 @@ public partial class MainWindow : Window
         Button button = sender as Button;
         int data = int.Parse(button.Tag as string);
         
-        InsertWindow insertWindow = new InsertWindow(data, connectionString);
+        InsertWindow insertWindow = new InsertWindow(connection, userId, data);
         insertWindow.ShowDialog();
         RefreshPanel(data);
     }

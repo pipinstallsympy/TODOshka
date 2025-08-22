@@ -1,0 +1,67 @@
+﻿<Window x:Class="TODOshka.Authorization"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Authorization" Height="170" Width="430"
+        Icon="./Resources/icon.ico"
+        Closing = "Authorization_OnClosing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Row="0" Grid.Column="0">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <TextBlock HorizontalAlignment="Right" Margin="0,0,10,0">Логин:</TextBlock>
+                <TextBlock HorizontalAlignment="Right" Margin="0,7,10,3">Пароль:</TextBlock>
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row="0" Grid.Column="1">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <TextBox
+                    Height="17"
+                    Width="155"
+                    x:Name="LoginBox"
+                    >
+                </TextBox>
+                <TextBox
+                    Height="17"
+                    Width="155"
+                    Margin="0,7,0,0"
+                    x:Name="PasswordBox"
+                >
+                </TextBox>
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Button
+                Height="20"
+                Width="50"
+                VerticalAlignment="Top"
+                Margin="0,10,0,0"
+                Content="Войти"
+                x:Name="LoginButton"
+                Click="LoginButton_Click"
+                >
+            </Button>
+            <Button
+                Height="20"
+                Width="150"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,8"
+                Content="Создать новый аккаунт"
+                Click="CreateAccountButton_Click"
+            >
+            </Button>
+        </Grid>
+    </Grid>
+</Window>
